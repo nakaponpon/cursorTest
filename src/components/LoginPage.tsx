@@ -16,22 +16,43 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 const LoginPage: React.FC = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [usernameInput, setUsernameInput] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   
   const loggedInUsername = useSelector(selectUsername);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // バックエンドがないため、ここでダミーの認証を行います
-    // ユーザー名: admin, パスワード: password
-    // ユーザー名: user, パスワード: password
-    if ((usernameInput === 'admin' || usernameInput === 'user') && password === 'password') {
-      dispatch(login(usernameInput));
+    try {
+      const response = await fetch('http://localhost:3001/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'ログインに失敗しました。');
+      }
+
+      // トークンをローカルストレージに保存
+      localStorage.setItem('token', data.token);
+      
+      dispatch(login(data.user.name));
       navigate('/');
-    } else {
-      setError('ユーザー名またはパスワードが間違っています。');
+    } catch (error) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError('ログインに失敗しました。');
+      }
     }
   };
 
@@ -49,13 +70,13 @@ const LoginPage: React.FC = () => {
             margin="normal"
             required
             fullWidth
-            id="username"
-            label="ユーザー名"
-            name="username"
-            autoComplete="username"
+            id="email"
+            label="メールアドレス"
+            name="email"
+            autoComplete="email"
             autoFocus
-            value={usernameInput}
-            onChange={(e) => setUsernameInput(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
             margin="normal"
