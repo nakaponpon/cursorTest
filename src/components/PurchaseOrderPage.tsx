@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
-import { Box, Typography, Container, Paper, Table, TableBody, TableCell, TableHead, TableRow, Divider } from '@mui/material';
+import React from 'react';
+import { Box, Typography, Container, Paper, Table, TableBody, TableCell, TableHead, TableRow, Divider, Button } from '@mui/material';
+import PrintIcon from '@mui/icons-material/Print';
 
 const PurchaseOrderPage: React.FC = () => {
-  // このページがマウントされたら印刷ダイアログを開く
-  useEffect(() => {
+  const handlePrint = () => {
     window.print();
-  }, []);
+  };
 
   return (
     <Container component={Paper} sx={{ p: 4, my: 4 }}>
@@ -14,6 +14,19 @@ const PurchaseOrderPage: React.FC = () => {
           注文書
         </Typography>
         <Box sx={{ textAlign: 'right' }}>
+          <Button
+            variant="contained"
+            startIcon={<PrintIcon />}
+            onClick={handlePrint}
+            sx={{ 
+              mb: 2,
+              '@media print': {
+                display: 'none'
+              }
+            }}
+          >
+            印刷
+          </Button>
           <Typography variant="h6">クライアント株式会社</Typography>
           <Typography>〒987-6543 東京都千代田区...</Typography>
           <Typography>TEL: 03-8765-4321</Typography>

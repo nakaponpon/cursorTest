@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
-import { Box, Typography, Container, Paper, Table, TableBody, TableCell, TableHead, TableRow, Divider } from '@mui/material';
+import React from 'react';
+import { Box, Typography, Container, Paper, Table, TableBody, TableCell, TableHead, TableRow, Divider, Button } from '@mui/material';
+import PrintIcon from '@mui/icons-material/Print';
 
 const DeliveryNotePage: React.FC = () => {
-  // このページがマウントされたら印刷ダイアログを開く
-  useEffect(() => {
+  const handlePrint = () => {
     window.print();
-  }, []);
+  };
 
   return (
     <Container component={Paper} sx={{ p: 4, my: 4 }}>
@@ -14,6 +14,19 @@ const DeliveryNotePage: React.FC = () => {
           納品書
         </Typography>
         <Box sx={{ textAlign: 'right' }}>
+          <Button
+            variant="contained"
+            startIcon={<PrintIcon />}
+            onClick={handlePrint}
+            sx={{ 
+              mb: 2,
+              '@media print': {
+                display: 'none'
+              }
+            }}
+          >
+            印刷
+          </Button>
           <Typography variant="subtitle1">納品日: 2024年XX月XX日</Typography>
           <Typography variant="h6" sx={{mt: 1}}>株式会社サンプル</Typography>
           <Typography>〒123-4567 東京都渋谷区...</Typography>
